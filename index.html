@@ -130,6 +130,7 @@
         #errorOutput {
             color: red;
             margin-top: 10px;
+            font-size: 14px;
         }
         code {
             background-color: #f4f4f4;
@@ -179,7 +180,6 @@
                 </div>
             </div>
         </div>
-
         <div id="lesson2" class="lesson">
             <div class="lesson-header" onclick="toggleLesson(this)"><h2>Lesson 2: CSS Styling</h2><span>▼</span></div>
             <div class="lesson-content">
@@ -187,14 +187,12 @@
                 <p>Example: <code>p { color: blue; }</code></p>
             </div>
         </div>
-
         <div id="lesson3" class="lesson">
             <div class="lesson-header" onclick="toggleLesson(this)"><h2>Lesson 3: JS Basics</h2><span>▼</span></div>
             <div class="lesson-content">
                 <p>JS adds interactivity. Try <code>alert("Hello!");</code>.</p>
             </div>
         </div>
-
         <div id="lesson4" class="lesson">
             <div class="lesson-header" onclick="toggleLesson(this)"><h2>Lesson 4: HTML Forms</h2><span>▼</span></div>
             <div class="lesson-content">
@@ -202,7 +200,6 @@
                 <p>Example: <code><input type="text" placeholder="Name"></code></p>
             </div>
         </div>
-
         <div id="lesson5" class="lesson">
             <div class="lesson-header" onclick="toggleLesson(this)"><h2>Lesson 5: CSS Flexbox</h2><span>▼</span></div>
             <div class="lesson-content">
@@ -210,7 +207,6 @@
                 <p>Example: <code>.box { display: flex; justify-content: center; }</code></p>
             </div>
         </div>
-
         <div id="lesson6" class="lesson">
             <div class="lesson-header" onclick="toggleLesson(this)"><h2>Lesson 6: JS Functions</h2><span>▼</span></div>
             <div class="lesson-content">
@@ -218,7 +214,6 @@
                 <p>Example: <code>function sayHi() { alert("Hi!"); }</code></p>
             </div>
         </div>
-
         <div id="lesson7" class="lesson">
             <div class="lesson-header" onclick="toggleLesson(this)"><h2>Lesson 7: JS Events</h2><span>▼</span></div>
             <div class="lesson-content">
@@ -226,7 +221,6 @@
                 <p>Example: <code><button onclick="alert('Clicked!')">Click Me</button></code></p>
             </div>
         </div>
-
         <div id="lesson8" class="lesson">
             <div class="lesson-header" onclick="toggleLesson(this)"><h2>Lesson 8: CSS Animations</h2><span>▼</span></div>
             <div class="lesson-content">
@@ -234,7 +228,6 @@
                 <p>Example: <code>div { animation: spin 2s infinite; } @keyframes spin { to { transform: rotate(360deg); } }</code></p>
             </div>
         </div>
-
         <div id="lesson9" class="lesson">
             <div class="lesson-header" onclick="toggleLesson(this)"><h2>Lesson 9: HTML Semantics</h2><span>▼</span></div>
             <div class="lesson-content">
@@ -242,7 +235,6 @@
                 <p>Example: <code><header><h1>My Site</h1></header></code></p>
             </div>
         </div>
-
         <div id="lesson10" class="lesson">
             <div class="lesson-header" onclick="toggleLesson(this)"><h2>Lesson 10: JS Arrays</h2><span>▼</span></div>
             <div class="lesson-content">
@@ -256,11 +248,11 @@
             <h2>Code Playground</h2>
             <p>Edit and run code live!</p>
             <div class="editor-group">
-                <textarea id="htmlInput" placeholder="HTML: <h3>Hello</h3>"></textarea>
-                <textarea id="cssInput" placeholder="CSS: h3 { color: blue; }"></textarea>
-                <textarea id="jsInput" placeholder="JS: alert('Hi!');"></textarea>
+                <textarea id="htmlInput" oninput="if (document.getElementById('livePreview').checked) runCode()" placeholder="HTML: <h3>Hello</h3>"></textarea>
+                <textarea id="cssInput" oninput="if (document.getElementById('livePreview').checked) runCode()" placeholder="CSS: h3 { color: blue; }"></textarea>
+                <textarea id="jsInput" oninput="if (document.getElementById('livePreview').checked) runCode()" placeholder="JS: console.log('Hi!');"></textarea>
             </div>
-            <label><input type="checkbox" id="livePreview" onchange="toggleLivePreview()"> Live Preview</label>
+            <label><input type="checkbox" id="livePreview"> Live Preview</label>
             <button onclick="runCode()">Run Code</button>
             <button onclick="resetCode()">Reset</button>
             <button onclick="downloadCode()">Download</button>
@@ -269,7 +261,7 @@
                 <option value="button">Simple Button</option>
                 <option value="flex">Flexbox Layout</option>
             </select>
-            <iframe id="outputFrame" sandbox="allow-scripts"></iframe>
+            <iframe id="outputFrame" sandbox="allow-scripts allow-same-origin"></iframe>
             <div id="errorOutput"></div>
         </div>
     </div>
@@ -278,19 +270,25 @@
         // Navigation and Progress
         function showLesson(lessonId) {
             document.querySelectorAll('.lesson').forEach(l => l.classList.remove('active'));
-            document.getElementById(lessonId).classList.add('active');
-            if (lessonId !== 'playground') markCompleted(lessonId);
+            const lesson = document.getElementById(lessonId);
+            if (lesson) {
+                lesson.classList.add('active');
+                if (lessonId !== 'playground') markCompleted(lessonId);
+            } else {
+                console.error(`Lesson ID ${lessonId} not found`);
+            }
         }
         function markCompleted(lessonId) {
-            let link = document.querySelector(`a[href="#${lessonId}"]`);
-            if (!link.classList.contains('completed')) {
+            const link = document.querySelector(`a[href="#${lessonId}"]`);
+            if (link && !link.classList.contains('completed')) {
                 link.classList.add('completed');
                 localStorage.setItem(lessonId, 'completed');
             }
         }
         function loadProgress() {
             document.querySelectorAll('nav a').forEach(a => {
-                if (localStorage.getItem(a.getAttribute('href').slice(1)) === 'completed') {
+                const id = a.getAttribute('href').slice(1);
+                if (localStorage.getItem(id) === 'completed') {
                     a.classList.add('completed');
                 }
             });
@@ -298,64 +296,78 @@
 
         // Lesson Collapse
         function toggleLesson(header) {
-            let content = header.nextElementSibling;
+            const content = header.nextElementSibling;
             content.classList.toggle('open');
             header.querySelector('span').textContent = content.classList.contains('open') ? '▲' : '▼';
         }
 
         // Playground
         function runCode() {
-            let html = document.getElementById('htmlInput').value;
-            let css = document.getElementById('cssInput').value;
-            let js = document.getElementById('jsInput').value;
-            let outputFrame = document.getElementById('outputFrame');
-            let errorOutput = document.getElementById('errorOutput');
+            const html = document.getElementById('htmlInput').value || '';
+            const css = document.getElementById('cssInput').value || '';
+            const js = document.getElementById('jsInput').value || '';
+            const outputFrame = document.getElementById('outputFrame');
+            const errorOutput = document.getElementById('errorOutput');
             errorOutput.textContent = '';
-            try {
-                let doc = outputFrame.contentWindow.document;
-                doc.open();
-                doc.write(`<!DOCTYPE html><html><head><style>${css}</style></head><body>${html}<script>try { ${js} } catch (e) { parent.document.getElementById('errorOutput').textContent = 'Error: ' + e.message; }</script></body></html>`);
-                doc.close();
-            } catch (e) {
-                errorOutput.textContent = 'Error: ' + e.message;
-            }
+
+            // Write HTML and CSS to iframe
+            const doc = outputFrame.contentWindow.document;
+            doc.open();
+            doc.write(`
+                <!DOCTYPE html>
+                <html>
+                <head><style>${css}</style></head>
+                <body>${html}</body>
+                </html>
+            `);
+            doc.close();
+
+            // Inject JS via postMessage to avoid CSP issues
+            outputFrame.contentWindow.postMessage({ type: 'runJS', code: js }, '*');
         }
+
+        // Listen for messages from iframe (e.g., errors)
+        window.addEventListener('message', (event) => {
+            if (event.data.type === 'error') {
+                document.getElementById('errorOutput').textContent = 'Error: ' + event.data.message;
+            }
+        });
+
+        // Reset Playground
         function resetCode() {
             document.getElementById('htmlInput').value = '';
             document.getElementById('cssInput').value = '';
             document.getElementById('jsInput').value = '';
             runCode();
         }
+
+        // Load Templates
         function loadTemplate(template) {
             if (template === 'button') {
-                document.getElementById('htmlInput').value = '<button>My Button</button>';
+                document.getElementById('htmlInput').value = '<button id="btn">My Button</button>';
                 document.getElementById('cssInput').value = 'button { padding: 10px; background: #007bff; color: white; border: none; }';
-                document.getElementById('jsInput').value = 'document.querySelector("button").onclick = () => alert("Clicked!");';
+                document.getElementById('jsInput').value = 'document.getElementById("btn").onclick = () => alert("Clicked!");';
             } else if (template === 'flex') {
                 document.getElementById('htmlInput').value = '<div class="box"><p>1</p><p>2</p></div>';
                 document.getElementById('cssInput').value = '.box { display: flex; gap: 10px; } p { background: #ddd; padding: 10px; }';
                 document.getElementById('jsInput').value = '';
             }
-            if (document.getElementById('livePreview').checked) runCode();
+            runCode();
         }
+
+        // Download Code
         function downloadCode() {
-            let html = document.getElementById('htmlInput').value;
-            let css = document.getElementById('cssInput').value;
-            let js = document.getElementById('jsInput').value;
-            let fullCode = `<!DOCTYPE html><html><head><style>${css}</style></head><body>${html}<script>${js}</script></body></html>`;
-            let blob = new Blob([fullCode], { type: 'text/html' });
-            let a = document.createElement('a');
+            const html = document.getElementById('htmlInput').value;
+            const css = document.getElementById('cssInput').value;
+            const js = document.getElementById('jsInput').value;
+            const fullCode = `<!DOCTYPE html><html><head><style>${css}</style></head><body>${html}<script>${js}</script></body></html>`;
+            const blob = new Blob([fullCode], { type: 'text/html' });
+            const a = document.createElement('a');
             a.href = URL.createObjectURL(blob);
             a.download = 'codecrafter.html';
+            document.body.appendChild(a);
             a.click();
-        }
-        let liveInterval;
-        function toggleLivePreview() {
-            if (document.getElementById('livePreview').checked) {
-                liveInterval = setInterval(runCode, 500);
-            } else {
-                clearInterval(liveInterval);
-            }
+            document.body.removeChild(a);
         }
 
         // Dark Mode
@@ -367,9 +379,32 @@
 
         // Quiz
         function checkQuiz(inputId, correctAnswer) {
-            let answer = document.getElementById(inputId).value.trim().toLowerCase();
+            const answer = document.getElementById(inputId).value.trim().toLowerCase();
             alert(answer === correctAnswer.toLowerCase() ? 'Correct!' : 'Try again!');
         }
+
+        // Iframe JS Handler (inject this into iframe)
+        const iframeScript = `
+            window.addEventListener('message', (event) => {
+                if (event.data.type === 'runJS') {
+                    try {
+                        eval(event.data.code);
+                    } catch (e) {
+                        parent.postMessage({ type: 'error', message: e.message }, '*');
+                    }
+                }
+            });
+        `;
+        window.addEventListener('load', () => {
+            const outputFrame = document.getElementById('outputFrame');
+            outputFrame.addEventListener('load', () => {
+                const doc = outputFrame.contentWindow.document;
+                const script = doc.createElement('script');
+                script.textContent = iframeScript;
+                doc.body.appendChild(script);
+            });
+            runCode(); // Initial render
+        });
 
         // Load Initial State
         loadProgress();
