@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeCrafter - Learn Coding</title>
+    <style>
+        :root {
+            --bg-color: #f0f0f0;
+            --text-color: #333;
+            --container-bg: white;
+            --nav-bg: #007bff;
+            --nav-text: white;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        body.dark {
+            --bg-color: #333;
+            --text-color: #f0f0f0;
+            --container-bg: #444;
+            --nav-bg: #0056b3;
+            --nav-text: #ddd;
+        }
+        h1 {
+            text-align: center;
+        }
+        h2 {
+            color: #007bff;
+            margin-top: 30px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--container-bg);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: background-color 0.3s;
+        }
+        nav {
+            background-color: var(--nav-bg);
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            position: sticky;
+            top: 20px;
+            z-index: 10;
+        }
+        nav a {
+            color: var(--nav-text);
+            text-decoration: none;
+            margin: 0 10px;
+            font-weight: bold;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        nav span.completed::after {
+            content: " ✓";
+            color: #00ff00;
+        }
+        .lesson {
+            display: none;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+        }
+        .lesson.active {
+            display: block;
+        }
+        .lesson-header {
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .lesson-content {
+            display: none;
+        }
+        .lesson-content.open {
+            display: block;
+        }
+        .playground {
+            margin-top: 40px;
+        }
+        .editor-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .editor-group textarea {
+            width: 33%;
+            height: 120px;
+            padding: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            resize: vertical;
+            background-color: var(--container-bg);
+            color: var(--text-color);
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #outputFrame {
+            width: 100%;
+            height: 200px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-top: 20px;
+            background-color: white;
+        }
+        #errorOutput {
+            color: red;
+            margin-top: 10px;
+        }
+        code {
+            background-color: #f4f4f4;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+        .quiz {
+            margin-top: 20px;
+        }
+        .quiz input {
+            padding: 5px;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to CodeCrafter</h1>
+        <p>Learn coding with HTML, CSS, and JavaScript—step by step!</p>
+        <button onclick="toggleDarkMode()">Toggle Dark Mode</button>
+
+        <!-- Navigation -->
+        <nav>
+            <a href="#lesson1" onclick="showLesson('lesson1')">HTML Basics</a>
+            <a href="#lesson2" onclick="showLesson('lesson2')">CSS Styling</a>
+            <a href="#lesson3" onclick="showLesson('lesson3')">JS Basics</a>
+            <a href="#lesson4" onclick="showLesson('lesson4')">HTML Forms</a>
+            <a href="#lesson5" onclick="showLesson('lesson5')">CSS Flexbox</a>
+            <a href="#lesson6" onclick="showLesson('lesson6')">JS Functions</a>
+            <a href="#lesson7" onclick="showLesson('lesson7')">JS Events</a>
+            <a href="#lesson8" onclick="showLesson('lesson8')">CSS Animations</a>
+            <a href="#lesson9" onclick="showLesson('lesson9')">HTML Semantics</a>
+            <a href="#lesson10" onclick="showLesson('lesson10')">JS Arrays</a>
+            <a href="#playground" onclick="showLesson('playground')">Playground</a>
+        </nav>
+
+        <!-- Lessons -->
+        <div id="lesson1" class="lesson active">
+            <div class="lesson-header" onclick="toggleLesson(this)"><h2>Lesson 1: HTML Basics</h2><span>▼</span></div>
+            <div class="lesson-content open">
+                <p>HTML is the structure of a webpage. Use tags like <code><p></code> and <code><h1></code>.</p>
+                <p>Example: <code><p>Hello, world!</p></code></p>
+                <div class="quiz">
+                    <p>Quiz: What tag makes a paragraph?</p>
+                    <input id="q1" placeholder="Type answer"><button onclick="checkQuiz('q1', '<p>')">Check</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="lesson2" class="lesson">
+            <div class="lesson-header" onclick="toggleLesson(this)"><h2>Lesson 2: CSS Styling</h2><span>▼</span></div>
+            <div class="lesson-content">
+                <p>CSS styles HTML. Use <code>color</code>, <code>font-size</code>.</p>
+                <p>Example: <code>p { color: blue; }</code></p>
+            </div>
+        </div>
+
+        <div id="lesson3" class="lesson">
+            <div class="lesson-header" onclick="toggleLesson(this)"><h2>Lesson 3: JS Basics</h2><span>▼</span></div>
+            <div class="lesson-content">
+                <p>JS adds interactivity. Try <code>alert("Hello!");</code>.</p>
+            </div>
+        </div>
+
+        <div id="lesson4" class="lesson">
+            <div class="lesson-header" onclick="toggleLesson(this)"><h2>Lesson 4: HTML Forms</h2><span>▼</span></div>
+            <div class="lesson-content">
+                <p>Forms use <code><input></code> and <code><button></code>.</p>
+                <p>Example: <code><input type="text" placeholder="Name"></code></p>
+            </div>
+        </div>
+
+        <div id="lesson5" class="lesson">
+            <div class="lesson-header" onclick="toggleLesson(this)"><h2>Lesson 5: CSS Flexbox</h2><span>▼</span></div>
+            <div class="lesson-content">
+                <p>Flexbox aligns elements with <code>display: flex;</code>.</p>
+                <p>Example: <code>.box { display: flex; justify-content: center; }</code></p>
+            </div>
+        </div>
+
+        <div id="lesson6" class="lesson">
+            <div class="lesson-header" onclick="toggleLesson(this)"><h2>Lesson 6: JS Functions</h2><span>▼</span></div>
+            <div class="lesson-content">
+                <p>Functions use <code>function name() {}</code>.</p>
+                <p>Example: <code>function sayHi() { alert("Hi!"); }</code></p>
+            </div>
+        </div>
+
+        <div id="lesson7" class="lesson">
+            <div class="lesson-header" onclick="toggleLesson(this)"><h2>Lesson 7: JS Events</h2><span>▼</span></div>
+            <div class="lesson-content">
+                <p>Events react to actions with <code>onclick</code>.</p>
+                <p>Example: <code><button onclick="alert('Clicked!')">Click Me</button></code></p>
+            </div>
+        </div>
+
+        <div id="lesson8" class="lesson">
+            <div class="lesson-header" onclick="toggleLesson(this)"><h2>Lesson 8: CSS Animations</h2><span>▼</span></div>
+            <div class="lesson-content">
+                <p>Animations use <code>@keyframes</code>.</p>
+                <p>Example: <code>div { animation: spin 2s infinite; } @keyframes spin { to { transform: rotate(360deg); } }</code></p>
+            </div>
+        </div>
+
+        <div id="lesson9" class="lesson">
+            <div class="lesson-header" onclick="toggleLesson(this)"><h2>Lesson 9: HTML Semantics</h2><span>▼</span></div>
+            <div class="lesson-content">
+                <p>Use <code><header></code>, <code><footer></code>.</p>
+                <p>Example: <code><header><h1>My Site</h1></header></code></p>
+            </div>
+        </div>
+
+        <div id="lesson10" class="lesson">
+            <div class="lesson-header" onclick="toggleLesson(this)"><h2>Lesson 10: JS Arrays</h2><span>▼</span></div>
+            <div class="lesson-content">
+                <p>Arrays store lists. Use <code>.forEach</code>.</p>
+                <p>Example: <code>let fruits = ['apple', 'banana']; fruits.forEach(f => console.log(f));</code></p>
+            </div>
+        </div>
+
+        <!-- Playground -->
+        <div id="playground" class="lesson">
+            <h2>Code Playground</h2>
+            <p>Edit and run code live!</p>
+            <div class="editor-group">
+                <textarea id="htmlInput" placeholder="HTML: <h3>Hello</h3>"></textarea>
+                <textarea id="cssInput" placeholder="CSS: h3 { color: blue; }"></textarea>
+                <textarea id="jsInput" placeholder="JS: alert('Hi!');"></textarea>
+            </div>
+            <label><input type="checkbox" id="livePreview" onchange="toggleLivePreview()"> Live Preview</label>
+            <button onclick="runCode()">Run Code</button>
+            <button onclick="resetCode()">Reset</button>
+            <button onclick="downloadCode()">Download</button>
+            <select onchange="loadTemplate(this.value)">
+                <option value="">Select Template</option>
+                <option value="button">Simple Button</option>
+                <option value="flex">Flexbox Layout</option>
+            </select>
+            <iframe id="outputFrame" sandbox="allow-scripts"></iframe>
+            <div id="errorOutput"></div>
+        </div>
+    </div>
+
+    <script>
+        // Navigation and Progress
+        function showLesson(lessonId) {
+            document.querySelectorAll('.lesson').forEach(l => l.classList.remove('active'));
+            document.getElementById(lessonId).classList.add('active');
+            if (lessonId !== 'playground') markCompleted(lessonId);
+        }
+        function markCompleted(lessonId) {
+            let link = document.querySelector(`a[href="#${lessonId}"]`);
+            if (!link.classList.contains('completed')) {
+                link.classList.add('completed');
+                localStorage.setItem(lessonId, 'completed');
+            }
+        }
+        function loadProgress() {
+            document.querySelectorAll('nav a').forEach(a => {
+                if (localStorage.getItem(a.getAttribute('href').slice(1)) === 'completed') {
+                    a.classList.add('completed');
+                }
+            });
+        }
+
+        // Lesson Collapse
+        function toggleLesson(header) {
+            let content = header.nextElementSibling;
+            content.classList.toggle('open');
+            header.querySelector('span').textContent = content.classList.contains('open') ? '▲' : '▼';
+        }
+
+        // Playground
+        function runCode() {
+            let html = document.getElementById('htmlInput').value;
+            let css = document.getElementById('cssInput').value;
+            let js = document.getElementById('jsInput').value;
+            let outputFrame = document.getElementById('outputFrame');
+            let errorOutput = document.getElementById('errorOutput');
+            errorOutput.textContent = '';
+            try {
+                let doc = outputFrame.contentWindow.document;
+                doc.open();
+                doc.write(`<!DOCTYPE html><html><head><style>${css}</style></head><body>${html}<script>try { ${js} } catch (e) { parent.document.getElementById('errorOutput').textContent = 'Error: ' + e.message; }</script></body></html>`);
+                doc.close();
+            } catch (e) {
+                errorOutput.textContent = 'Error: ' + e.message;
+            }
+        }
+        function resetCode() {
+            document.getElementById('htmlInput').value = '';
+            document.getElementById('cssInput').value = '';
+            document.getElementById('jsInput').value = '';
+            runCode();
+        }
+        function loadTemplate(template) {
+            if (template === 'button') {
+                document.getElementById('htmlInput').value = '<button>My Button</button>';
+                document.getElementById('cssInput').value = 'button { padding: 10px; background: #007bff; color: white; border: none; }';
+                document.getElementById('jsInput').value = 'document.querySelector("button").onclick = () => alert("Clicked!");';
+            } else if (template === 'flex') {
+                document.getElementById('htmlInput').value = '<div class="box"><p>1</p><p>2</p></div>';
+                document.getElementById('cssInput').value = '.box { display: flex; gap: 10px; } p { background: #ddd; padding: 10px; }';
+                document.getElementById('jsInput').value = '';
+            }
+            if (document.getElementById('livePreview').checked) runCode();
+        }
+        function downloadCode() {
+            let html = document.getElementById('htmlInput').value;
+            let css = document.getElementById('cssInput').value;
+            let js = document.getElementById('jsInput').value;
+            let fullCode = `<!DOCTYPE html><html><head><style>${css}</style></head><body>${html}<script>${js}</script></body></html>`;
+            let blob = new Blob([fullCode], { type: 'text/html' });
+            let a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'codecrafter.html';
+            a.click();
+        }
+        let liveInterval;
+        function toggleLivePreview() {
+            if (document.getElementById('livePreview').checked) {
+                liveInterval = setInterval(runCode, 500);
+            } else {
+                clearInterval(liveInterval);
+            }
+        }
+
+        // Dark Mode
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark');
+            localStorage.setItem('darkMode', document.body.classList.contains('dark'));
+        }
+        if (localStorage.getItem('darkMode') === 'true') document.body.classList.add('dark');
+
+        // Quiz
+        function checkQuiz(inputId, correctAnswer) {
+            let answer = document.getElementById(inputId).value.trim().toLowerCase();
+            alert(answer === correctAnswer.toLowerCase() ? 'Correct!' : 'Try again!');
+        }
+
+        // Load Initial State
+        loadProgress();
+        showLesson('lesson1');
+    </script>
+</body>
+</html>
